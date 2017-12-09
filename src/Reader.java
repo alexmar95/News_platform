@@ -1,4 +1,4 @@
 
-public class Reader {
+public class Reader extends Thread{
 
 }
