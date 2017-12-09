@@ -11,7 +11,7 @@ public class Platform {
 	}
 	
 	private void initActors(int editors, int readers){
-		Editor e;
+		/*Editor e;
 		for(int i=0;i<editors;i++){
 			e = new Editor();
 			this.editors.add(e);
@@ -22,7 +22,7 @@ public class Platform {
 			r = new Reader();
 			this.readers.add(r);
 			r.run();
-		}
+		}*/
 	}
 	
 }

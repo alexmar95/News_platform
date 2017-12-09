@@ -1,7 +1,6 @@
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 /*
  * Sistem de stiri
@@ -22,18 +21,19 @@ import java.util.Date;
 public class Article {
 	private static final DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 	private final String publishDate = formatter.format(Calendar.getInstance().getTime());
+	private final Domain domain;//don't allow domain change for the now
 	private String lastModified;
 	private String source;
 	private String author;
 	private String content;
 	
-	public Article(String _source, String _author, String _content)
+	public Article(Domain d,String _source, String _author, String _content)
 	{
-		setLastModified();
+		domain = d;
 		source = _source;
 		author = _author;
 		content = _content;
-		
+		setLastModified();
 	}
 	
 	private void setLastModified(){
