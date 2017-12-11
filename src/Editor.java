@@ -21,7 +21,7 @@ public class Editor extends Thread implements MessageListener, ExceptionListener
 	private void createArticle(){
 		int domainIndex = rand.nextInt(domains.length);
 		Article ar = new Article(randomString(16),domains[domainIndex], name, randomString(64));
-		platform.publishArticle(this,ar);
+		platform.publishArticle(ar,this);
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class Editor extends Thread implements MessageListener, ExceptionListener
 	}
 	
 	public void run(){
-		double create = 0.2;//1-create is the probability to create a new article instead of editing an old one
+		double create = 1.;//1-create is the probability to create a new article instead of editing an old one
 		try {
 			platform.registerEditor(this);
 		} catch (NamingException | JMSException e) {

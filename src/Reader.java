@@ -6,8 +6,10 @@ import javax.naming.NamingException;
 public class Reader extends Thread implements MessageListener, ExceptionListener{
 	private final Platform platform;
 	private Domain[] domains;
+	private String name;
 	
-	public Reader(Platform p, Domain[] _topics){
+	public Reader(String _name, Platform p, Domain[] _topics){
+		name = _name;
 		platform  = p;
 		domains = _topics;
 	}
@@ -24,7 +26,7 @@ public class Reader extends Thread implements MessageListener, ExceptionListener
 	
 	@Override
 	public void onMessage(Message message) {
-		
+		System.out.println(name + " a citit articolul: " + message.toString());
 	}
 	
 	public ArrayList<String> getDomains() {
@@ -48,6 +50,12 @@ public class Reader extends Thread implements MessageListener, ExceptionListener
 		}
 		while(true){
 			readRandomArticle();
+			try {
+				Thread.sleep(3);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 }
