@@ -1,13 +1,15 @@
+import java.util.ArrayList;
+
 import javax.jms.*;
 import javax.naming.NamingException;
 
 public class Reader extends Thread implements MessageListener, ExceptionListener{
 	private final Platform platform;
-	private String[] topics;
+	private Domain[] domains;
 	
-	public Reader(Platform p, String[] _topics){
+	public Reader(Platform p, Domain[] _topics){
 		platform  = p;
-		topics = _topics;
+		domains = _topics;
 	}
 	
 	@Override
@@ -22,15 +24,15 @@ public class Reader extends Thread implements MessageListener, ExceptionListener
 	
 	@Override
 	public void onMessage(Message message) {
-		TextMessage msg = (TextMessage) message;
-	       try {
-	          System.out.println("received: " + msg.getText());
-	       } catch (JMSException ex) {
-	          ex.printStackTrace();
-	       }
+		
 	}
-	public String[] getTopics() {
-		return topics;
+	
+	public ArrayList<String> getDomains() {
+		ArrayList<String> arr = new ArrayList<String>();
+		for(Domain d : domains){
+			arr.add(d.toString());
+		}
+		return arr;
 	}
 	
 	private void readRandomArticle(){

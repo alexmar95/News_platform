@@ -7,19 +7,20 @@ import javax.naming.NamingException;
 public class Editor extends Thread implements MessageListener, ExceptionListener{
 	
 	private Platform platform;
-	private String[] topics;
+	private Domain[] domains;
 	private String name;
 	private ArrayList<Article> myArticles = new ArrayList<Article>(); 
 	private Random rand = new Random(System.currentTimeMillis());
 	
-	public Editor(String _name,Platform p, String[] _topics){
+	public Editor(String _name,Platform p, Domain[] _domains){
 		name = _name;
 		platform  = p;
-		topics = _topics;
+		domains = _domains;
 	}
 	
 	private void createArticle(){
-		Article ar = new Article(randomString(16), name, randomString(64));
+		int domainIndex = rand.nextInt(domains.length);
+		Article ar = new Article(randomString(16),domains[domainIndex], name, randomString(64));
 		platform.publishArticle(this,ar);
 	}
 
@@ -54,10 +55,15 @@ public class Editor extends Thread implements MessageListener, ExceptionListener
 		int index = rand.nextInt(myArticles.size());
 		Article a = myArticles.get(index);
 		a.editContent(randomString(64));
+		//submit edit changes
 	}
 	
-	public String[] getTopics() {
-		return topics;
+	public ArrayList<String> getDomains() {
+		ArrayList<String> arr = new ArrayList<String>();
+		for(Domain d : domains){
+			arr.add(d.toString());
+		}
+		return arr;
 	}
 	
 	public void run(){

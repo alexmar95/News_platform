@@ -17,11 +17,16 @@ public class Platform {
 		//initActors(editors,readers);		
 	}
 */
+	public Platform(){
+		
+		
+	}
+	
 	public void registerEditor(Editor e) throws NamingException, JMSException{
 		// get the initial context
 		InitialContext ctx = new InitialContext();
 
-		String topics[] = e.getTopics();
+		ArrayList<String> topics = e.getDomains();
 		// lookup the queue object
 		Queue queue = (Queue) ctx.lookup("topic/news");
 
@@ -55,7 +60,7 @@ public class Platform {
 		// get the initial context
 		InitialContext ctx = new InitialContext();
 
-		String[] topics = r.getTopics();
+		ArrayList<String> topics = r.getDomains();
 		
 		for(String topic : topics)
 		{
