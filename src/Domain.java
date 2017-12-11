@@ -29,6 +29,17 @@ public class Domain {
 			
 	}
 	
+
+	public String toString()
+	{
+		String str = "";
+		
+		if(this.parentDomain != null)
+			str = this.parentDomain.toString();
+		
+		return str + "/" + this.name;
+	}
+	
 	public static Domain getByName(String name)
 	{
 		for(Domain d : domainRecord)
