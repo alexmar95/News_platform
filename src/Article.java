@@ -50,7 +50,7 @@ public class Article {
 	
 	public String toString()
 	{
-		return "Author: " + author + "\nPublishing date: "  + publishDate + "\nLast modification date: "
+		return "Author: " + author + "\nSource: " + source + "\nPublishing date: "  + publishDate + "\nLast modification date: "
 				+ lastModified + "\n" + content;                                             
 	}
 	

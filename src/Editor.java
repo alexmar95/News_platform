@@ -19,7 +19,7 @@ public class Editor extends Thread implements EventHandler{
 	
 	private void createArticle(){
 		int domainIndex = rand.nextInt(domains.length);
-		Article ar = new Article(this,domains[domainIndex],randomString(16) , randomString(64));
+		Article ar = new Article(this,domains[domainIndex],Source.randomSource().toString() , randomString(64));
 		myArticles.add(ar);
 		myIndexes.add(0);
 		platform.publishArticle(ar,this);
