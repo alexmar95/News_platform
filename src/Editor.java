@@ -4,12 +4,13 @@ import java.util.Random;
 import javax.jms.*;
 import javax.naming.NamingException;
 
-public class Editor extends Thread implements MessageListener, ExceptionListener{
+public class Editor extends Thread implements MessageListener, ExceptionListener, EventHandler{
 	
 	private Platform platform;
 	private Domain[] domains;
 	private String name;
-	private ArrayList<Article> myArticles = new ArrayList<Article>(); 
+	private ArrayList<Article> myArticles = new ArrayList<Article>();
+	private ArrayList<Integer> myIndexes = new ArrayList<Integer>();
 	private Random rand = new Random(System.currentTimeMillis());
 	
 	public Editor(String _name,Platform p, Domain[] _domains){
@@ -20,7 +21,9 @@ public class Editor extends Thread implements MessageListener, ExceptionListener
 	
 	private void createArticle(){
 		int domainIndex = rand.nextInt(domains.length);
-		Article ar = new Article(randomString(16),domains[domainIndex], name, randomString(64));
+		Article ar = new Article(this,domains[domainIndex],randomString(16) , randomString(64));
+		myArticles.add(ar);
+		myIndexes.add(0);
 		platform.publishArticle(ar,this);
 	}
 
@@ -52,9 +55,12 @@ public class Editor extends Thread implements MessageListener, ExceptionListener
 	}
 	
 	private void editArticle(){
+		if(myArticles.isEmpty())
+			return;
 		int index = rand.nextInt(myArticles.size());
 		Article a = myArticles.get(index);
 		a.editContent(randomString(64));
+		platform.editArticleEvent(a);
 		//submit edit changes
 	}
 	
@@ -67,13 +73,8 @@ public class Editor extends Thread implements MessageListener, ExceptionListener
 	}
 	
 	public void run(){
-		double create = 1.;//1-create is the probability to create a new article instead of editing an old one
-		try {
-			platform.registerEditor(this);
-		} catch (NamingException | JMSException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		double create = 0.6;//create is the probability to create a new article instead of editing an old one
+		
 		double decision;
 		while(true){
 			decision = rand.nextDouble();
@@ -83,12 +84,42 @@ public class Editor extends Thread implements MessageListener, ExceptionListener
 				editArticle();
 			}
 			try {
-				Thread.sleep(2);
+				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
+
+	private synchronized void markArticleRead(Article a) {
+		int index = myArticles.indexOf(a);
+		int val = myIndexes.get(index);
+		myIndexes.set(index, ++val);
+		System.out.println("Article "+a.getID() +" read for "+val+" times\n\n");
+		
+	}
 	
+	@Override
+	public void articleRead(Article a) {
+		markArticleRead(a);
+		
+	}
+
+	@Override
+	public void articleEdited(String ar) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void articleCreated(String ar) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public String getEditorName() {
+		return name;
+	}
 }

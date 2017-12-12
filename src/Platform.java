@@ -10,44 +10,43 @@ public class Platform {
 	private ArrayList<Article> articles = new ArrayList<Article>(); 
 	private ArrayList<Editor> editors = new ArrayList<Editor>();
 	private ArrayList<Reader> readers = new ArrayList<Reader>();
+	//private ArrayList<String[]> domains = new ArrayList<String[]>();
 	private Random rand = new Random(System.currentTimeMillis());
 	private InitialContext ctx;
 	
-/*	public Platform(int editors, int readers){
-		//initActors(editors,readers);		
-	}
-*/
+
 	public Platform(){
-		try {
-			ctx = new InitialContext();
-		} catch (NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
+	}
+	
+	public void  subscribeReader(Reader r) {
+		readers.add(r);
+	}
+	
+	public void editArticleEvent(Article a) {
+		String domain = a.getDomain();
+		for(Reader r : readers) {
+			for(String d : r.getDomains()) {
+				if(d.contains(domain)) {
+					if(r.filter(a))
+						r.articleEdited(a.toString());
+					break;
+				}
+			}
 		}
 	}
 	
-	public void registerEditor(Editor e) throws NamingException, JMSException{
-	}
-
-	public void registerReader(Reader r) throws NamingException, JMSException{
-		// get the initial context
-
-		ArrayList<String> topics = r.getDomains();
-		
-		for(String topic : topics)
-		{
-			subscribeToEvent(r, "domain", topic);
-
-			// wait for messages
-			/*System.out.print("waiting for messages");
-		for (int i = 0; i < 10; i++) {
-			//Thread.sleep(1000);
-			System.out.print(".");
-		}*/
-			//System.out.println();
-
-			// close the queue connection
-			//queueConn.close();
+	public void generateArticleCreateEvent(Article a) {
+		String domain = a.getDomain();
+		for(Reader r : readers) {
+			for(String d : r.getDomains()) {
+				if(d.contains(domain)) {
+					if(r.filter(a))
+						r.articleCreated(a.toString());
+					a.notifyAllHandlers();
+					break;
+				}
+			}
 		}
 	}
 	
@@ -67,8 +66,7 @@ public class Platform {
 	}
 	
 	private synchronized void addArticle(Article arr){
-		articles.add(arr);
-		
+		articles.add(arr);		
 	}
 	
 	private synchronized void removeArticle(Article arr){
@@ -82,85 +80,18 @@ public class Platform {
 	
 	public void publishArticle( Article a, Editor e){
 		addArticle(a);
-		try {
-			subscribeToEvent(e, "articles", "/"+a.getID());
-			generateEvent("domains", a.getDomain());
-		} catch (NamingException | JMSException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		generateArticleCreateEvent(a);
 	}
 	
 	public String readRandomArticle(){
+		if(articles.size()==0) {
+			return "";
+		}
 		int index = rand.nextInt(articles.size());
 		Article a = articles.get(index);
-		try {
-			generateEvent("articles",""+a.getID());
-		} catch (NamingException | JMSException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		a.notifyAllHandlers();
 		
 		return a.toString();
 	}
 
-	private void generateEvent(String root,String subdom) throws NamingException, JMSException{
-		//InitialContext ctx = new InitialContext();
-		
-		Queue queue = (Queue) ctx.lookup(root + "/" + subdom);
-
-		// lookup the queue connection factory
-		QueueConnectionFactory connFactory = (QueueConnectionFactory) ctx.lookup(root + "/connectionFactory");
-
-		// create a queue connection
-		QueueConnection queueConn = connFactory.createQueueConnection();
-
-		// create a queue session
-		QueueSession queueSession = queueConn.createQueueSession(false, Session.DUPS_OK_ACKNOWLEDGE);
-
-		// create a queue sender
-		QueueSender queueSender = queueSession.createSender(queue);
-		queueSender.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-
-		// create a simple message to say "Hello"
-		TextMessage message = queueSession.createTextMessage(subdom);
-
-		// send the message
-		queueSender.send(message);
-
-		// print what we did
-		System.out.println("sent: " + message.getText());
-
-		// close the queue connection
-		queueConn.close(); 	
-		//generate event that it was read "stire citita + ID"`	
-	}
-	
-	private void subscribeToEvent(Object subscriber, String root, String subdom) throws NamingException, JMSException{
-		
-		Queue queue = (Queue) ctx.lookup("root" + subdom);
-		// lookup the queue connection factory
-		QueueConnectionFactory connFactory = (QueueConnectionFactory) ctx.
-				lookup(root +"/connectionFactory");
-
-		// create a queue connection
-		QueueConnection queueConn = connFactory.createQueueConnection();
-
-		// create a queue session
-		QueueSession queueSession = queueConn.createQueueSession(false,
-				Session.AUTO_ACKNOWLEDGE);
-
-		// create a queue receiver
-		QueueReceiver queueReceiver = queueSession.createReceiver(queue);
-
-		// set an asynchronous message listener
-		queueReceiver.setMessageListener((MessageListener) subscriber);
-
-		// set an asynchronous exception listener on the connection
-		queueConn.setExceptionListener((ExceptionListener) subscriber);
-
-		// start the connection
-		queueConn.start();
-	}
-	
 }
