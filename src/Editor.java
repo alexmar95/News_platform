@@ -1,10 +1,8 @@
 import java.util.ArrayList;
 import java.util.Random;
 
-import javax.jms.*;
-import javax.naming.NamingException;
 
-public class Editor extends Thread implements MessageListener, ExceptionListener, EventHandler{
+public class Editor extends Thread implements EventHandler{
 	
 	private Platform platform;
 	private Domain[] domains;
@@ -27,20 +25,7 @@ public class Editor extends Thread implements MessageListener, ExceptionListener
 		platform.publishArticle(ar,this);
 	}
 
-	@Override
-	public void onException(JMSException exception) {
-		System.err.println("an error occurred: " + exception);
-	}
 
-	@Override
-	public void onMessage(Message message) {
-		TextMessage msg = (TextMessage) message;
-	       try {
-	          System.out.println("received: " + msg.getText());
-	       } catch (JMSException ex) {
-	          ex.printStackTrace();
-	       }
-	}
 	
 	private String randomString(int size){
 		String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";

@@ -1,10 +1,6 @@
 import java.util.ArrayList;
-import java.util.concurrent.Callable;
 
-import javax.jms.*;
-import javax.naming.NamingException;
-
-public class Reader extends Thread implements MessageListener, ExceptionListener, EventHandler{
+public class Reader extends Thread implements EventHandler{
 	private final Platform platform;
 	private Domain[] domains;
 	private String name;
@@ -17,10 +13,7 @@ public class Reader extends Thread implements MessageListener, ExceptionListener
 		domains = _topics;
 	}
 	
-	@Override
-	public void onException(JMSException exception) {
-		System.err.println("an error occurred: " + exception);
-	}
+	
 
 	public void setFilter(String author) {
 		authorFilter = author;
@@ -35,10 +28,6 @@ public class Reader extends Thread implements MessageListener, ExceptionListener
 		return b;
 	}
 	
-	@Override
-	public void onMessage(Message message) {
-		System.out.println(name + " a citit articolul: " + message.toString());
-	}
 	
 	public ArrayList<String> getDomains() {
 		ArrayList<String> arr = new ArrayList<String>();

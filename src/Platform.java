@@ -1,19 +1,14 @@
 import java.util.ArrayList;
 import java.util.Random;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.jms.*;
 
 public class Platform {
 	//TODO: change ArrayList to something better
 	private ArrayList<Article> articles = new ArrayList<Article>(); 
-	private ArrayList<Editor> editors = new ArrayList<Editor>();
+	//private ArrayList<Editor> editors = new ArrayList<Editor>();
 	private ArrayList<Reader> readers = new ArrayList<Reader>();
 	//private ArrayList<String[]> domains = new ArrayList<String[]>();
 	private Random rand = new Random(System.currentTimeMillis());
-	private InitialContext ctx;
-	
 
 	public Platform(){
 		
@@ -50,20 +45,6 @@ public class Platform {
 		}
 	}
 	
-	public void onMessage(Message message)
-	{
-		TextMessage msg = (TextMessage) message;
-		try {
-			System.out.println("received: " + msg.getText());
-		} catch (JMSException ex) {
-			ex.printStackTrace();
-		}
-	}
-
-	public void onException(JMSException exception)
-	{
-		   System.err.println("an error occurred: " + exception);
-	}
 	
 	private synchronized void addArticle(Article arr){
 		articles.add(arr);		
