@@ -1,12 +1,14 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Reader extends Thread implements EventHandler{
 	private final Platform platform;
 	private Domain[] domains;
 	private String name;
 	private Filter filter;
+	private Random rand = new Random(System.nanoTime());
 	//private Callable<Boolean> filter;
-	private String authorFilter = "";
+
 	
 	public Reader(String _name, Platform p, Domain[] _topics, Filter _filter){
 		name = _name;
@@ -16,10 +18,6 @@ public class Reader extends Thread implements EventHandler{
 	}
 	
 	
-
-	public void setFilter(String author) {
-		authorFilter = author;
-	}
 	
 	public Filter getFilter() {
 		return this.filter;
@@ -56,7 +54,7 @@ public class Reader extends Thread implements EventHandler{
 		while(true){
 			readRandomArticle();
 			try {
-				Thread.sleep(3000);
+				Thread.sleep(3000+rand.nextInt(2000));
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -77,13 +75,13 @@ public class Reader extends Thread implements EventHandler{
 
 	@Override
 	public void articleEdited(String ar) {
-		System.out.println("Article just edited:\n"+ar + "\n\n");
+		System.out.println(name+": Article just edited:\n"+ar + "\n\n");
 		
 	}
 
 	@Override
 	public void articleCreated(String ar) {
-		System.out.println("Article created:\n"+ar + "\n\n");
+		System.out.println(name+": Article created:\n"+ar + "\n\n");
 		
 	}
 }

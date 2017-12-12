@@ -30,7 +30,7 @@ public class Editor extends Thread implements EventHandler{
 	private String randomString(int size){
 		String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder salt = new StringBuilder();
-        Random rnd = new Random(System.currentTimeMillis());
+        Random rnd = new Random(System.nanoTime());
         while (salt.length() < size) { // length of the random string.
             int index = (int) (rnd.nextFloat() * SALTCHARS.length());
             salt.append(SALTCHARS.charAt(index));
@@ -69,7 +69,7 @@ public class Editor extends Thread implements EventHandler{
 				editArticle();
 			}
 			try {
-				Thread.sleep(5000);
+				Thread.sleep(5000+rand.nextInt(2000));
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -81,8 +81,7 @@ public class Editor extends Thread implements EventHandler{
 		int index = myArticles.indexOf(a);
 		int val = myIndexes.get(index);
 		myIndexes.set(index, ++val);
-		System.out.println("Article "+a.getID() +" read for "+val+" times\n\n");
-		
+		System.out.println(name +":\nArticle "+a.getID() +" read for "+val+" times\n\n");
 	}
 	
 	@Override

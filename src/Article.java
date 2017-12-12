@@ -2,7 +2,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.concurrent.Semaphore;
+
 
 public class Article {
 	private static final DateFormat formatter = new SimpleDateFormat("E, dd/MM/yyyy 'at' h:m:ss");
@@ -61,7 +61,7 @@ public class Article {
 	
 	public String toString()
 	{
-		return "Author: " + author + "\nSource: " + source + "\nPublishing date: "  + publishDate + "\nLast modification date: "
+		return "Author: " + author + "\nTopic: "+domain+"\nSource: " + source + "\nPublishing date: "  + publishDate + "\nLast modification date: "
 				+ lastModified + "\n" + content;                                             
 	}
 	

@@ -8,18 +8,21 @@ public class Platform {
 	//private ArrayList<Editor> editors = new ArrayList<Editor>();
 	private ArrayList<Reader> readers = new ArrayList<Reader>();
 	//private ArrayList<String[]> domains = new ArrayList<String[]>();
-	private Random rand = new Random(System.currentTimeMillis());
+	private Random rand = new Random(System.nanoTime());
 
 	public Platform(){
 		
 	}
 	
 	public void  subscribeReader(Reader r) {
+		synchronized(readers) {
 		readers.add(r);
+		}
 	}
 	
 	public void editArticleEvent(Article a) {
 		String domain = a.getDomain();
+		synchronized(readers) {
 		for(Reader r : readers) {
 			for(String d : r.getDomains()) {
 				if(d.contains(domain)) {
@@ -29,11 +32,12 @@ public class Platform {
 					break;
 				}
 			}
-		}
+		}}
 	}
 	
 	public void generateArticleCreateEvent(Article a) {
 		String domain = a.getDomain();
+		synchronized(readers) {
 		for(Reader r : readers) {
 			for(String d : r.getDomains()) {
 				if(d.contains(domain)) {
@@ -44,7 +48,7 @@ public class Platform {
 					break;
 				}
 			}
-		}
+		}}
 	}
 	
 	
