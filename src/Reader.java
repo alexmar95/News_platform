@@ -4,13 +4,15 @@ public class Reader extends Thread implements EventHandler{
 	private final Platform platform;
 	private Domain[] domains;
 	private String name;
+	private Filter filter;
 	//private Callable<Boolean> filter;
 	private String authorFilter = "";
 	
-	public Reader(String _name, Platform p, Domain[] _topics){
+	public Reader(String _name, Platform p, Domain[] _topics, Filter _filter){
 		name = _name;
 		platform  = p;
 		domains = _topics;
+		filter = _filter;
 	}
 	
 	
@@ -19,6 +21,10 @@ public class Reader extends Thread implements EventHandler{
 		authorFilter = author;
 	}
 	
+	public Filter getFilter() {
+		return this.filter;
+	}
+	/*
 	public boolean filter(Article a){
 		boolean b = true;
 		if(authorFilter.isEmpty())
@@ -26,7 +32,7 @@ public class Reader extends Thread implements EventHandler{
 		b&=a.getAuthor().equals(authorFilter);
 		
 		return b;
-	}
+	}*/
 	
 	
 	public ArrayList<String> getDomains() {

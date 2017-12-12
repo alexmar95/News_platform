@@ -23,7 +23,8 @@ public class Platform {
 		for(Reader r : readers) {
 			for(String d : r.getDomains()) {
 				if(d.contains(domain)) {
-					if(r.filter(a))
+					Filter f = r.getFilter();
+					if(f.match(a))
 						r.articleEdited(a.toString());
 					break;
 				}
@@ -36,7 +37,8 @@ public class Platform {
 		for(Reader r : readers) {
 			for(String d : r.getDomains()) {
 				if(d.contains(domain)) {
-					if(r.filter(a))
+					Filter f = r.getFilter();
+					if(f.match(a))
 						r.articleCreated(a.toString());
 					a.notifyAllHandlers();
 					break;

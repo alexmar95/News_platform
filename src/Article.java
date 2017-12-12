@@ -39,6 +39,17 @@ public class Article {
 	public String getDomain(){
 		return domain.toString();
 	}
+
+	public String getContent()
+	{
+		return this.content;
+	}
+	
+	public String getSource()
+	{
+		return this.source;
+	}
+	
 	private void setLastModified(){
 		lastModified = formatter.format(Calendar.getInstance().getTime());
 	}
